@@ -1,0 +1,312 @@
+[
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n01",
+    "Sub Indikator": "Seluruh nilai pada rapor mampu mencapai KKM"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n02",
+    "Sub Indikator": "Nilai rata-rata rapor meningkat setiap semester"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n03",
+    "Sub Indikator": "Nilai ulangan harian dan tugas mencapai KKM"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n04",
+    "Sub Indikator": "Mampu menentukan jurusan dan kampus tujuan"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n05",
+    "Sub Indikator": "Memiliki dan menjalankan strategi lolos ke kampus tujuan"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n06",
+    "Sub Indikator": "Mampu mengerjakan soal tes ujian masuk PTN"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n07",
+    "Sub Indikator": "Mendapatkan beasiswa (KIPK, swasta, orang tua asuh, iluni, dll)"
+  },
+  {
+    "Profile": "Campus Preparation",
+    "Kode": "n08",
+    "Sub Indikator": "Menyusun dokumen persiapan beasiswa secara mandiri"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n09",
+    "Sub Indikator": "Menegakkan sholat 5 waktu"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n10",
+    "Sub Indikator": "Berdzikir setelah sholat dan pada keadaan tertentu"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n11",
+    "Sub Indikator": "Melaksanakan amalan sunnah tertentu (dhuha, tahajjud, shaum dsj)"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n12",
+    "Sub Indikator": "Mengetahui sirah nabawiyah dasar"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n13",
+    "Sub Indikator": "Memiliki aqidah yang lurus sesuai ahlussunnah wal-jama'ah"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n14",
+    "Sub Indikator": "Mampu menerapkan 24 hadits pilihan (tentang aqidah, akhlak dan ibadah)"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n15",
+    "Sub Indikator": "Tidak terlibat pergaulan bebas, narkoba, dan perbuatan maksiat lainnya"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n16",
+    "Sub Indikator": "Meminta ijin dan mencium tangan orang tua ketika pergi dan pulang ke rumah"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n17",
+    "Sub Indikator": "Bersikap lemah lembut kepada orang tua"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n18",
+    "Sub Indikator": "Membantu pekerjaan orangtua"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n19",
+    "Sub Indikator": "Berdo'a untuk orangtua"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n20",
+    "Sub Indikator": "Berwudhu sebelum belajar"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n21",
+    "Sub Indikator": "Berdo'a sebelum dan sesudah belajar"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n22",
+    "Sub Indikator": "Serius / fokus dalam menyimak pelajaran"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n23",
+    "Sub Indikator": "Bersikap sopan dan hormat kepada guru"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n24",
+    "Sub Indikator": "Mengulang / membaca kembali pelajaran yang telah didapatkan"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n25",
+    "Sub Indikator": "Mampu memahami Fiqih thaharah"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n26",
+    "Sub Indikator": "Mampu memahami Fiqih Sholat"
+  },
+  {
+    "Profile": "Akhlak Mulia",
+    "Kode": "n27",
+    "Sub Indikator": "Mampu memahami Fiqih Puasa"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n28",
+    "Sub Indikator": "Menguasai tahsin al-Qur'an"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n29",
+    "Sub Indikator": "Melaksanakan tilawah harian"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n30",
+    "Sub Indikator": "Mampu menulis huruf Arab"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n31",
+    "Sub Indikator": "Melaksanakan Tadabbur Al-Quran"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n32",
+    "Sub Indikator": "Mampu menyelesaikan hafalan Juz 30"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n33",
+    "Sub Indikator": "Melakukan muroja'ah setiap hari"
+  },
+  {
+    "Profile": "Quran Mentorship",
+    "Kode": "n34",
+    "Sub Indikator": "Menghafal 24 hadits pilihan (tentang aqidah, akhlak dan ibadah)"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n35",
+    "Sub Indikator": "Menyusun dan memiliki Individual Development Plan"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n36",
+    "Sub Indikator": "Menerapkan Individual Development Plan  dallam kegiatan sehari-hari"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n37",
+    "Sub Indikator": "Melakukan Self Assesment untuk menemukan minat dan bakat"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n38",
+    "Sub Indikator": "Mampu membaca efektif"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n39",
+    "Sub Indikator": "Mampu menerapkan teknik menghafal efektif"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n40",
+    "Sub Indikator": "Mampu mencatat dengan teknik mindmapping"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n41",
+    "Sub Indikator": "Melakukan pengembangan diri secara mandiri atau mengikuti pelatihan sesuai minat"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n42",
+    "Sub Indikator": "Mampu membuat CV dan Portofolio"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n43",
+    "Sub Indikator": "Memahami literasi keuangan dasar"
+  },
+  {
+    "Profile": "Softskill",
+    "Kode": "n44",
+    "Sub Indikator": "Mampu menggunakan canva, notion dan Chat Gpt untuk pelajar"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n45",
+    "Sub Indikator": "Berani tampil di depan publik"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n46",
+    "Sub Indikator": "Aktif bertanya"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n47",
+    "Sub Indikator": "Berani menyampaikan pendapat atau ide"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n48",
+    "Sub Indikator": "Siap memimpin kelompok / tim"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n49",
+    "Sub Indikator": "Mampu mengidentifikasi masalah"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n50",
+    "Sub Indikator": "Mampu menentukan sumber dan akar penyebab dari masalah"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n51",
+    "Sub Indikator": "Mampu merumuskan solusi masalah secara efektif dan efisien"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n52",
+    "Sub Indikator": "Menjaga barang-barang yang dimiliki dan menggunakannya dengan baik"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n53",
+    "Sub Indikator": "Mengerjakan tugas yang menjadi tanggung jawabnya"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n54",
+    "Sub Indikator": "Berani mengakui kesalahan dan meminta maaf atas kesalahan yang telah dilakukan"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n55",
+    "Sub Indikator": "Mengikuti KBM sekolah sesuai jadwal"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n56",
+    "Sub Indikator": "Hadir tepat waktu dalam setiap kegiatan"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n57",
+    "Sub Indikator": "Mengikuti kegiatan pembinaan program"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n58",
+    "Sub Indikator": "Menguasai kemampuan public speaking"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n59",
+    "Sub Indikator": "Memiliki kebiasaan menulis jurnal harian sebagai penerima manfaat"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n60",
+    "Sub Indikator": "Mampu membuat tulisan sederhana (opini, cerpen, dsj.)"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n61",
+    "Sub Indikator": "Menolong orang yang tidak mampu / membutuhkan bantuan"
+  },
+  {
+    "Profile": "Leadership",
+    "Kode": "n62",
+    "Sub Indikator": "Menyusun dan memiliki social project"
+  }
+]

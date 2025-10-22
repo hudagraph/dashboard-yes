@@ -398,16 +398,66 @@ function renderCharts(filtered) {
 
   try {
     const perWil = {};
-    filtered.forEach(r => { const k = r.wilayah || '—'; if(!perWil[k]) perWil[k]=[]; perWil[k].push(Number((r._pct && r._pct.total) || r.total_skor_pct) || 0); });
-    const labelsW = Object.keys(perWil).sort((a,b)=> String(a).localeCompare(b));
-    const dataW = labelsW.map(l => { const arr = perWil[l]; return arr && arr.length ? Math.round(arr.reduce((s,x)=>s+Number(x),0)/arr.length) : 0; });
+    const domains = [
+      { key: 'campus', field: '_pct.campus', label: 'Campus Preparation', color: 'rgba(255, 99, 132, 0.8)' },   // merah
+      { key: 'akhlak', field: '_pct.akhlak', label: 'Akhlak Mulia', color: 'rgba(75, 192, 75, 0.8)' },         // hijau
+      { key: 'quranic', field: '_pct.quranic', label: 'Quranic Mentorship', color: 'rgba(54, 162, 235, 0.8)' }, // biru
+      { key: 'softskill', field: '_pct.softskill', label: 'Softskill', color: 'rgba(255, 206, 86, 0.8)' },      // kuning
+      { key: 'leadership', field: '_pct.leadership', label: 'Leadership', color: 'rgba(255, 159, 64, 0.8)' }    // oranye
+    ];
+
+    // kumpulkan data per wilayah
+    filtered.forEach(r => {
+      const w = r.wilayah || '—';
+      if (!perWil[w]) perWil[w] = { campus: [], akhlak: [], quranic: [], softskill: [], leadership: [] };
+      perWil[w].campus.push(Number((r._pct && r._pct.campus) || 0));
+      perWil[w].akhlak.push(Number((r._pct && r._pct.akhlak) || 0));
+      perWil[w].quranic.push(Number((r._pct && r._pct.quranic) || 0));
+      perWil[w].softskill.push(Number((r._pct && r._pct.softskill) || 0));
+      perWil[w].leadership.push(Number((r._pct && r._pct.leadership) || 0));
+    });
+
+    const wilayahLabels = Object.keys(perWil).sort((a,b)=> String(a).localeCompare(b));
+
+    // hitung rata-rata per domain per wilayah
+    const avgPerDomain = (wilayah, key) => {
+      const arr = perWil[wilayah][key] || [];
+      return arr.length ? Math.round(arr.reduce((s,x)=>s+x,0)/arr.length) : 0;
+    };
+
+    const datasets = domains.map(d => ({
+      label: d.label,
+      backgroundColor: d.color,
+      data: wilayahLabels.map(w => avgPerDomain(w, d.key))
+    }));
+
     const elW = document.getElementById('chart-wilayah');
     if (elW) {
       const ctxW = elW.getContext('2d');
-      const cfgW = { type:'bar', data:{ labels: labelsW, datasets:[{ label:'Avg total', data: dataW }]}, options:{ responsive:true, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true, suggestedMax:100 } } } };
+      const cfgW = {
+        type: 'bar',
+        data: {
+          labels: wilayahLabels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: 'Rata-rata (%)' } },
+            x: { title: { display: true, text: 'Wilayah' } }
+          },
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { enabled: true }
+          }
+        }
+      };
       chartWilayah = makeOrUpdate(ctxW, chartWilayah, cfgW);
     }
-  } catch(e){ console.warn('wilayah chart error', e); }
+  } catch (e) {
+    console.warn('wilayah chart error', e);
+  }
 
   try {
     const domains = ['campus_preparation','akhlak_mulia','quranic_mentorship','softskill','leadership'];

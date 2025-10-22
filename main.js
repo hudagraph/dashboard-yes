@@ -549,6 +549,99 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   } catch(e){ console.warn('addExportButton failed', e); }
 })();
 
+// Tambah tombol Interpretasi
+(function addInterpretasiButton(){
+  try {
+    const btn = document.createElement('button');
+    btn.id = 'btn-interpretasi';
+    btn.type = 'button';
+    btn.className = 'ml-2 px-3 py-2 bg-amber-600 text-white rounded';
+    btn.textContent = 'Interpretasi';
+    const exportBtn = document.getElementById('btn-export-pdf');
+    if (exportBtn && exportBtn.parentNode) exportBtn.parentNode.insertBefore(btn, exportBtn.nextSibling);
+
+    btn.addEventListener('click', () => {
+      const filtered = window.getFilteredRows ? window.getFilteredRows() : DATA_ROWS;
+      showInterpretasiModal(generateInterpretation(filtered));
+    });
+  } catch(e){ console.warn('addInterpretasiButton failed', e); }
+})();
+
+// Fungsi buat modal interpretasi
+function showInterpretasiModal(htmlContent) {
+  let modal = document.getElementById('modal-interpretasi');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-interpretasi';
+    modal.className = 'fixed inset-0 flex items-center justify-center bg-black/40 z-[9999] hidden';
+    modal.innerHTML = `
+      <div class="bg-white rounded p-6 w-11/12 max-w-3xl max-h-[80vh] overflow-auto">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-lg font-semibold">Interpretasi Hasil dan Kesimpulan</h3>
+          <button id="modal-interpretasi-close" class="text-slate-600 text-lg">✕</button>
+        </div>
+        <div id="interpretasi-body" class="text-sm leading-relaxed space-y-3"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('#modal-interpretasi-close').addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+  }
+  modal.querySelector('#interpretasi-body').innerHTML = htmlContent;
+  modal.classList.remove('hidden');
+}
+
+// Fungsi buat analisis otomatis
+function generateInterpretation(filtered) {
+  if (!filtered || !filtered.length) return '<p>Tidak ada data untuk diinterpretasikan.</p>';
+
+  const avg = (arr) => arr.length ? Math.round(arr.reduce((s,x)=>s+x,0)/arr.length) : 0;
+  const periodeSet = [...new Set(filtered.map(r=>r.periode))];
+  const wilayahSet = [...new Set(filtered.map(r=>r.wilayah))];
+  const domainKeys = ['campus','akhlak','quranic','softskill','leadership'];
+
+  // 1️⃣ Definisi penilaian & tren profil
+  const avgPerPeriode = periodeSet.map(p => {
+    const rows = filtered.filter(r => r.periode === p);
+    const totalAvg = avg(rows.map(r=>r._pct.total));
+    return `${p}: ${totalAvg}%`;
+  }).join(', ');
+
+  // 2️⃣ Perbandingan antar wilayah
+  const avgWilayah = wilayahSet.map(w => {
+    const rows = filtered.filter(r=>r.wilayah===w);
+    return { w, val: avg(rows.map(r=>r._pct.total)) };
+  }).sort((a,b)=>b.val-a.val);
+  const bestW = avgWilayah[0]?.w || '—';
+  const worstW = avgWilayah[avgWilayah.length-1]?.w || '—';
+
+  // 3️⃣ Distribusi kategori skor
+  const catMap = {};
+  filtered.forEach(r=>{
+    const g = r.grade || scoreToLabel(r._pct.total);
+    catMap[g] = (catMap[g]||0)+1;
+  });
+  const catText = Object.entries(catMap).map(([k,v])=>`${k}: ${v}`).join(', ');
+
+  // 4️⃣ Profil (domain) dengan rata-rata terendah & tertinggi
+  const avgDomain = domainKeys.map(k=>{
+    const vals = filtered.map(r=>r._pct[k]||0);
+    return { k, val: avg(vals) };
+  }).sort((a,b)=>a.val-b.val);
+  const low = avgDomain[0];
+  const high = avgDomain[avgDomain.length-1];
+
+  // hasil HTML interpretasi
+  return `
+  <ol class="list-decimal list-inside space-y-2">
+    <li><strong>Definisi Penilaian:</strong> Penilaian dilakukan per periode dan mencakup lima profil utama (Campus Preparation, Akhlak Mulia, Quranic Mentorship, Softskill, Leadership). Nilai rata-rata profil per periode adalah ${avgPerPeriode}.</li>
+    <li><strong>Perbandingan Wilayah:</strong> Dari seluruh data, wilayah dengan nilai tertinggi adalah <b>${bestW}</b>, sedangkan yang terendah adalah <b>${worstW}</b>. Perbedaan ini menunjukkan variasi kualitas pembinaan di tiap wilayah.</li>
+    <li><strong>Kategori Skor:</strong> Sebaran kategori skor di seluruh periode adalah ${catText}. Hal ini mencerminkan distribusi performa penerima manfaat berdasarkan standar penilaian.</li>
+    <li><strong>Profil dengan Nilai Tertinggi & Terendah:</strong> Domain dengan rata-rata terendah adalah <b>${low.k} (${low.val}%)</b>, sedangkan tertinggi adalah <b>${high.k} (${high.val}%)</b>. Profil dengan nilai rendah ini dapat menjadi fokus perbaikan bagi para mentor di periode berikutnya.</li>
+  </ol>
+  `;
+}
+
 // export filtered view
 async function exportFilteredViewToPDF() {
   const { jsPDF } = window.jspdf || {};

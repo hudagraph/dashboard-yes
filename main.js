@@ -3,6 +3,27 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFicjhBeSAjlHn
 const TomSelect = window.TomSelect;
 const TOTAL_PM_TARGET = 85;
 
+// --- TAMBAHAN: Data tabel untuk PDF ---
+const KETENTUAN_SKOR_HEAD = [['Skor', 'Keterangan']];
+const KETENTUAN_SKOR_BODY = [
+  ['Skor 4', 'Selalu, Sangat menguasai, 80% - 100% tercapai / ada'],
+  ['Skor 3', 'Sering, Menguasai, 65% - 79% tercapai / ada'],
+  ['Skor 2', 'Kadang-kadang, Cukup menguasai, 55% - 64% tercapai ada'],
+  ['Skor 1', 'Jarang, Kurang menguasai, 40% - 54% tercapai / ada'],
+  ['Skor 0', 'Tidak pernah, Tidak menguasai, <40% tercapai / ada']
+];
+
+const KATEGORI_GRADE_HEAD = [['Nilai', 'Kategori']];
+const KATEGORI_GRADE_BODY = [
+  ['100', 'Excellent (Sempurna / Istimewa)'],
+  ['90-99', 'Very Good (Baik Sekali)'],
+  ['80-89', 'Good (Baik)'],
+  ['70-79', 'Satisfactory (Cukup)'],
+  ['50-69', 'Need Improvement (Kurang Baik)'],
+  ['< 50', 'Below Standart (Lemah)']
+];
+// --- AKHIR TAMBAHAN ---
+
 // Overlay
 let overlay = document.getElementById('loading-overlay');
 if (!overlay) {
@@ -660,6 +681,47 @@ async function exportFilteredViewToPDF() {
   const avgTotal = rows.length ? Math.round(rows.reduce((s,r)=> s + (Number((r._pct && r._pct.total) || r.total_skor_pct) || 0),0)/rows.length) : 0;
   doc.text('Rata-rata Total: ' + avgTotal, margin, y); y += 8;
 
+  // --- TAMBAHAN: Masukkan tabel ketentuan skor dan grade ---
+  if (doc.autoTable) {
+    // Add Ketentuan Skor
+    doc.setFontSize(12);
+    doc.text('Ketentuan Skor Indikator', margin, y);
+    y += 5;
+    doc.autoTable({
+      startY: y,
+      head: KETENTUAN_SKOR_HEAD,
+      body: KETENTUAN_SKOR_BODY,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 1.5 },
+      headStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], fontStyle: 'bold' },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 7;
+
+    // Check for new page
+    if (y > doc.internal.pageSize.getHeight() - 60) { // Cek ruang untuk tabel berikutnya
+      doc.addPage();
+      y = margin;
+    }
+
+    // Add Kategori Grade
+    doc.setFontSize(12);
+    doc.text('Kategori Grade (Nilai Total)', margin, y);
+    y += 5;
+    doc.autoTable({
+      startY: y,
+      head: KATEGORI_GRADE_HEAD,
+      body: KATEGORI_GRADE_BODY,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 1.5 },
+      headStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], fontStyle: 'bold' },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 10; // Beri jarak ekstra sebelum chart
+  }
+  // --- AKHIR TAMBAHAN ---
+
+
   // charts snapshot - capture canvases if present
   const chartIds = ['chart-trend-periode','chart-wilayah','chart-domain','chart-grade'];
   for (const id of chartIds) {
@@ -668,11 +730,19 @@ async function exportFilteredViewToPDF() {
     const canvas = el.getContext ? el : (el.querySelector && el.querySelector('canvas')) ? el.querySelector('canvas') : null;
     if (!canvas || !canvas.toDataURL) continue;
     try {
+      // Pastikan Y cukup untuk chart, jika tidak, tambah halaman baru
+      if (y > doc.internal.pageSize.getHeight() - 60) { // Asumsi tinggi chart
+          doc.addPage(); y = margin;
+      }
+      
       const img = canvas.toDataURL('image/png',1.0);
       const imgProps = doc.getImageProperties(img);
       const maxW = pageWidth - margin*2;
       const h = (imgProps.height * maxW) / imgProps.width;
-      if (y + h > doc.internal.pageSize.getHeight() - margin) { doc.addPage(); y = margin; }
+      
+      if (y + h > doc.internal.pageSize.getHeight() - margin) { // Cek lagi setelah dapat tinggi
+          doc.addPage(); y = margin; 
+      }
       doc.addImage(img, 'PNG', margin, y, maxW, h); y += h + 6;
     } catch(e){ console.warn('chart export failed', e); }
   }
@@ -686,6 +756,7 @@ async function exportFilteredViewToPDF() {
     ['Leadership', String(getAvgFromFiltered(rows,'leadership')), scoreToLabel(getAvgFromFiltered(rows,'leadership'))]
   ];
   if (doc.autoTable) {
+    if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = margin; } // Cek halaman
     doc.autoTable({ startY: y + 2, head: [['Domain','Avg','Label']], body: domainRows, theme:'grid', styles:{fontSize:10}, margin:{left:margin,right:margin} });
     y = doc.lastAutoTable.finalY + 6;
   } else {
@@ -696,6 +767,7 @@ async function exportFilteredViewToPDF() {
   const tableCols = ['Wilayah','Nama PM','Periode','Total','Grade'];
   const tableBody = rows.map(rr => ([ rr.wilayah||'', rr.nama_pm||'', rr.periode||'', (rr._pct && rr._pct.total) ? rr._pct.total : (rr.total_skor_pct? rr.total_skor_pct :''), rr.grade||'' ]));
   if (doc.autoTable) {
+    if (y > doc.internal.pageSize.getHeight() - 20) { doc.addPage(); y = margin; } // Cek halaman
     doc.autoTable({ startY: y+4, head:[tableCols], body:tableBody, styles:{fontSize:9}, margin:{left:margin,right:margin}, didDrawPage: function(data){ doc.setFontSize(8); doc.text('Generated: '+now.toLocaleString(), margin, doc.internal.pageSize.getHeight()-8); } });
   } else {
     let yy = y+4;
@@ -707,17 +779,25 @@ async function exportFilteredViewToPDF() {
   function getAvgFromFiltered(rows, shortKey){ if (!rows || !rows.length) return 0; const vals = rows.map(r => Number((r._pct && r._pct[shortKey]) || r[shortKey] || 0)).filter(v=>!isNaN(v)); return vals.length ? Math.round(vals.reduce((s,x)=>s+x,0)/vals.length) : 0; }
 }
 
-// export single PM to PDF
+
+// =================================================================
+// === FUNGSI INI DIMODIFIKASI (PEWARNAAN FONT, JUDUL, & LEGENDA) ===
+// =================================================================
 function exportPMToPDF(row) {
   const { jsPDF } = window.jspdf || {};
   if (!jsPDF) { alert('jsPDF belum dimuat'); return; }
   const doc = new jsPDF({ unit:'mm', format:'a4' }); const margin=12; let y=margin;
   const pageW = doc.internal.pageSize.getWidth();
-  doc.setFontSize(14); doc.text('Detail PM: ' + (row.nama_pm||'PM'), margin, y); y+=8;
-  doc.setFontSize(11); doc.text('Wilayah: ' + (row.wilayah||''), margin, y); y+=6;
-  doc.text('Periode: ' + (row.periode||''), margin, y); y+=6;
-  doc.text('Grade: ' + (row.grade||''), margin, y); y+=8;
+  
+  // --- MODIFIKASI: Judul (Permintaan #2) ---
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text('Report Detail Performa PM YES 2025', pageW / 2, y, { align: 'center' });
+  y += 10;
+  doc.setFont(undefined, 'normal');
+  // --- AKHIR MODIFIKASI JUDUL ---
 
+  // Tabel data utama (dibiarkan karena ini ringkasan yg bagus)
   const dataMain = [
     ['Field','Value'],
     ['Nama PM', row.nama_pm||''],
@@ -733,15 +813,146 @@ function exportPMToPDF(row) {
     dataMain.slice(1).forEach(rw => { doc.text(rw.join(': '), margin, y); y+=6; });
   }
 
-  const subRows = [];
-  for (let i=1;i<=62;i++){ const key='n'+String(i).padStart(2,'0'); if (key in row) { subRows.push([ (SUB_INDICATORS[key]||key), row[key] ?? '' ]); } }
+  // --- MODIFIKASI: Tabel domain terpisah & Pewarnaan Font (Permintaan #1) ---
+
+  // Definisikan grup domain
+  const domainGroups = [
+    { title: 'Campus Preparation', start: 1, end: 8 },
+    { title: 'Akhlak Mulia', start: 9, end: 26 },
+    { title: 'Quranic Mentorship', start: 27, end: 33 },
+    { title: 'Softskill', start: 34, end: 43 },
+    { title: 'Leadership', start: 44, end: 62 }
+  ];
+
   if (doc.autoTable) {
-    doc.autoTable({ startY: y, head: [['Sub Indicator','Value']], body: subRows, styles:{fontSize:9}, margin:{left:margin,right:margin} });
+    // Loop melalui setiap grup domain
+    for (const group of domainGroups) {
+      // Cek apakah butuh halaman baru
+      if (y > doc.internal.pageSize.getHeight() - 40) {
+        doc.addPage();
+        y = margin;
+      }
+
+      // 1. Buat Judul Domain
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      doc.text(group.title, margin, y);
+      y += 6;
+      doc.setFont(undefined, 'normal');
+
+      // 2. Siapkan data body untuk tabel ini, SEKALIGUS DENGAN STYLING
+      const tableBody = [];
+      for (let i = group.start; i <= group.end; i++) {
+        const key = 'n' + String(i).padStart(2, '0');
+        if (key in row) {
+          const rawValue = row[key];
+          const scoreVal = Number(rawValue);
+          
+          // Tentukan style untuk font
+          let valueStyle = { textColor: [0, 0, 0], halign: 'right' }; // Default (hitam & rata kanan)
+          
+          if (rawValue !== null && rawValue !== undefined && rawValue !== '') {
+            if (!isNaN(scoreVal) && scoreVal < 3) {
+              valueStyle.textColor = [255, 0, 0]; // Merah
+            }
+          }
+
+          tableBody.push([
+            // Sel Indikator (Objek)
+            { 
+              content: (SUB_INDICATORS[key] || key), 
+              styles: { cellPadding: 1.5 } 
+            },
+            // Sel Nilai (Objek)
+            { 
+              content: rawValue ?? '', 
+              styles: { ...valueStyle, cellPadding: 1.5 }
+            }
+          ]);
+        }
+      }
+
+      // 3. Gambar tabel untuk domain ini
+      doc.autoTable({
+        startY: y,
+        head: [['Sub Indicator', 'Value']],
+        body: tableBody,
+        styles: { fontSize: 9 }, // Hapus padding global, sudah diatur per sel
+        headStyles: { fillColor: [241, 245, 249], textColor: [0, 0, 0], fontStyle: 'bold' },
+        margin: { left: margin, right: margin },
+        // HAPUS 'willDrawCell' karena style sudah di-inline
+      });
+      
+      y = doc.lastAutoTable.finalY + 8; // Beri jarak antar tabel domain
+    }
   } else {
-    subRows.forEach(rr => { if (y > doc.internal.pageSize.getHeight()-20) { doc.addPage(); y=margin; } doc.text(rr.join(' | '), margin, y); y+=6; });
+    doc.text('Gagal memuat autoTable plugin.', margin, y);
   }
+  // --- AKHIR MODIFIKASI TABEL DOMAIN ---
+
+
+  // --- Tabel Ketentuan (Tetap) ---
+  if (doc.autoTable) {
+    if (y > doc.internal.pageSize.getHeight() - 80) { 
+      doc.addPage();
+      y = margin;
+    }
+    
+    doc.setFontSize(12);
+    doc.text('Ketentuan Skor Indikator', margin, y);
+    y += 5;
+    doc.autoTable({
+      startY: y,
+      head: KETENTUAN_SKOR_HEAD,
+      body: KETENTUAN_SKOR_BODY,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 1.5 },
+      headStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], fontStyle: 'bold' },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 7;
+
+    if (y > doc.internal.pageSize.getHeight() - 60) {
+      doc.addPage();
+      y = margin;
+    }
+
+    doc.setFontSize(12);
+    doc.text('Kategori Grade (Nilai Total)', margin, y);
+    y += 5;
+    doc.autoTable({
+      startY: y,
+      head: KATEGORI_GRADE_HEAD,
+      body: KATEGORI_GRADE_BODY,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 1.5 },
+      headStyles: { fillColor: [241, 245, 249], textColor: [0,0,0], fontStyle: 'bold' },
+      margin: { left: margin, right: margin }
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  }
+  // --- AKHIR TABEL KETENTUAN ---
+
+  // --- MODIFIKASI: Legenda (Permintaan #3) ---
+  if (y > doc.internal.pageSize.getHeight() - 20) { // Cek sisa halaman
+    doc.addPage();
+    y = margin;
+  }
+
+  doc.setFontSize(10);
+  doc.text('Catatan:', margin, y); // Mengganti "Legenda"
+  y += 6;
+  
+  doc.setFontSize(9);
+  doc.setTextColor(0, 0, 0); // Reset warna teks ke hitam
+  doc.text('Untuk nilai di bawah 3 (skor 0, 1, 2) maka perlu di perhatikan secara khusus untuk di tingkatkan.', margin, y);
+  y += 8; 
+  // --- AKHIR MODIFIKASI LEGENDA ---
 
   doc.save('detail-pm-' + ((row.nama_pm||'pm').replace(/\s+/g,'_')) + '-' + (new Date()).toISOString().slice(0,19).replace(/[:T]/g,'-') + '.pdf');
 }
+// =================================================================
+// === AKHIR DARI FUNGSI YANG DIMODIFIKASI ===
+// =================================================================
 
 loadDataInit();

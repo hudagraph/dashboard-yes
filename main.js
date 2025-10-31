@@ -1,5 +1,5 @@
 // main.js - CLEAN rebuilt by assistant
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXBexoF7cEi9ZHHTXkMMCigNLVcsyP-GdqiiPODkRbosgnNnpA1eyFygRHeo9MZ1eG/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFicjhBeSAjlHnZWetEWjTh7ve9EXebHIuJpUW2MWJDxynMe238H4mbCFhQZYVSMdW/exec';
 const TomSelect = window.TomSelect;
 const TOTAL_PM_TARGET = 85;
 
